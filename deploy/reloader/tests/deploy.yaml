@@ -25,8 +25,7 @@ spec:
         app:  nginx-reload
     spec:
       containers:
-      # nginx:1.23.3-alpine
-      - image:  docker.io/deeplythink/nginx-reloader:v1
+      - image:  nginx:1.23.3-alpine
         name:  nginx-reload
         volumeMounts:
         - mountPath: /etc/nginx/conf.d
