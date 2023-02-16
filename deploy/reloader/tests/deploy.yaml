@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  nginx-reload
+  annotations:
+    app: nginx-reload
+    # 方案1：简单除暴
+    # reloader.stakater.com/auto: "true"
+
+    # 方案2：需要 configmap 加上annos: reloader.stakater.com/match: "true"
+    # reloader.stakater.com/search: "true"
+
+    # 方案3：
+    # configmap.reloader.stakater.com/reload: "nginx-conf"
+
+    # secret.reloader.stakater.com/reload: "foo-secret"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  nginx-reload
+  template:
+    metadata:
+      labels:
+        app:  nginx-reload
+    spec:
+      containers:
+      # nginx:1.23.3-alpine
+      - image:  docker.io/deeplythink/nginx-reloader:v1
+        name:  nginx-reload
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d
+          name: config
+        imagePullPolicy: IfNotPresent
+      volumes:
+        - name: config
+          configMap:
+            name: nginx-conf
+      
